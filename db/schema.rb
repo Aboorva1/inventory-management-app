@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[7.1].define(version: 2025_02_21_150858) do
+ActiveRecord::Schema[7.1].define(version: 2025_02_21_163759) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -21,6 +21,25 @@ ActiveRecord::Schema[7.1].define(version: 2025_02_21_150858) do
     t.datetime "updated_at", null: false
   end
 
+  create_table "invoice_products", force: :cascade do |t|
+    t.bigint "invoice_id", null: false
+    t.bigint "product_id", null: false
+    t.integer "quantity"
+    t.decimal "price"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["invoice_id"], name: "index_invoice_products_on_invoice_id"
+    t.index ["product_id"], name: "index_invoice_products_on_product_id"
+  end
+
+  create_table "invoices", force: :cascade do |t|
+    t.bigint "customer_id", null: false
+    t.decimal "total"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["customer_id"], name: "index_invoices_on_customer_id"
+  end
+
   create_table "products", force: :cascade do |t|
     t.string "name"
     t.integer "quantity"
@@ -29,4 +48,7 @@ ActiveRecord::Schema[7.1].define(version: 2025_02_21_150858) do
     t.datetime "updated_at", null: false
   end
 
+  add_foreign_key "invoice_products", "invoices"
+  add_foreign_key "invoice_products", "products"
+  add_foreign_key "invoices", "customers"
 end
